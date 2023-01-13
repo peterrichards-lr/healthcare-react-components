@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "base-64": "^1.0.0",
+    "chart.js": "^3.6.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^4.0.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1"
   },
