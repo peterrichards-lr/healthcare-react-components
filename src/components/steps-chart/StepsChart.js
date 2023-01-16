@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,12 +7,13 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
-import { Bar } from "react-chartjs-2";
+import { Bar } from 'react-chartjs-2';
 import AnnotationPlugin from 'chartjs-plugin-annotation';
 
-import stepsApi from "./StepsApi";
+import stepsApi from './StepsApi';
+import { getCssVariable, propsStrToObj } from '../../common/utility';
 
 ChartJS.register(
   AnnotationPlugin,
@@ -25,9 +26,12 @@ ChartJS.register(
 );
 
 const StepsChart = (props) => {
-  const { startDate, endDate, maxEntries = 7, targetSteps = 10000 } = props;
+  var { startDate, endDate, maxEntries, targetSteps } = propsStrToObj(props);
   const [labels, setLabels] = useState([]);
   const [data, setData] = useState([]);
+
+  targetSteps =
+    targetSteps ? targetSteps : 10000;
 
   useEffect(() => {
     (async () => {
@@ -35,16 +39,15 @@ const StepsChart = (props) => {
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
           if (items === undefined || !(items instanceof Array)) {
-            console.warn("Items is not an array");
+            console.warn('Items is not an array');
             return;
           }
           if (pageSize < totalCount) {
-            console.warn("The returned set of items is not the full set");
+            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
           }
           if (items.length !== pageSize) {
-            console.info("There are fewer items than requested");
+            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
           }
-          console.log(items);
           var dates = [];
           var readings = [];
           items.reverse().forEach((element) => {
@@ -57,10 +60,11 @@ const StepsChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, [startDate, endDate, maxEntries, targetSteps]);
+  }, []);
 
-  console.log(labels);
-  console.log(data);
+  const targetLineColor = getCssVariable('--stepsChartTargetLineColor');
+  const belowTargetColor = getCssVariable('--stepsChartBelowTargetBarColor');
+  const aboveTargetColor = getCssVariable('--stepsChartAboveTargetBarColor');
 
   return (
     <Bar
@@ -68,13 +72,13 @@ const StepsChart = (props) => {
         labels,
         datasets: [
           {
-            backgroundColor: "lightgray",
+            backgroundColor: belowTargetColor || 'lightgray',
             data: data.map(function (value) {
               return value < targetSteps ? value : null;
             }),
           },
           {
-            backgroundColor: "green",
+            backgroundColor: aboveTargetColor || 'green',
             data: data.map(function (value) {
               return value >= targetSteps ? value : null;
             }),
@@ -85,7 +89,11 @@ const StepsChart = (props) => {
         responsive: true,
         scales: {
           y: {
-            type: "linear",
+            type: 'linear',
+          },
+          x: {
+            type: 'category',
+            stacked: true,
           },
         },
         plugins: {
@@ -94,7 +102,7 @@ const StepsChart = (props) => {
           },
           title: {
             display: true,
-            text: "Steps",
+            text: 'Steps',
           },
           annotation: {
             annotations: {
@@ -102,12 +110,12 @@ const StepsChart = (props) => {
                 type: 'line',
                 yMin: targetSteps,
                 yMax: targetSteps,
-                borderColor: 'green',
-                borderDash: [20, 30]
-              }
-            }
-          }
-        }
+                borderColor: targetLineColor || 'green',
+                borderDash: [20, 30],
+              },
+            },
+          },
+        },
       }}
     />
   );

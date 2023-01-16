@@ -1,23 +1,12 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-.container {  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 0px 0px;
-  grid-auto-flow: row;
-  grid-template-areas:
-    ". ."
-    ". .";
+:root {
+    --heartRateChartBarColor: var(--warning, #ffa503);
+    --bloodPressureChartDiaPointColor: var(--danger, #ff0000);
+    --bloodPressureChartDiaLineColor: var(--danger, #ff0000);
+    --bloodPressureChartSysPointColor: var(--warning, #ffa503);
+    --bloodPressureChartSysLineColor: var(--warning, #ffa503);
+    --stepsChartTargetLineColor: var(--success, #008001);
+    --stepsChartBelowTargetBarColor: var(--gray-500, #d3d3d3);
+    --stepsChartAboveTargetBarColor: var(--success, #008001);
+    --weightChartPointColor: var(--success, #008001);
+    --weightChartLineColor: var(--success, #008001);
 }

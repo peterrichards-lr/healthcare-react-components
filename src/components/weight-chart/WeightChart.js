@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,10 +8,11 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 
-import weightApi from "./WeightApi";
+import weightApi from './WeightApi';
+import { getCssVariable, propsStrToObj } from '../../common/utility';
 
 ChartJS.register(
   CategoryScale,
@@ -24,7 +25,7 @@ ChartJS.register(
 );
 
 const WeightChart = (props) => {
-  const { startDate, endDate, maxEntries = 7 } = props;
+  const { startDate, endDate, maxEntries} = propsStrToObj(props);
   const [labels, setLabels] = useState();
   const [data, setData] = useState();
 
@@ -34,16 +35,15 @@ const WeightChart = (props) => {
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
           if (items === undefined || !(items instanceof Array)) {
-            console.warn("Items is not an array");
+            console.warn('Items is not an array');
             return;
           }
           if (pageSize < totalCount) {
-            console.warn("The returned set of items is not the full set");
+            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
           }
           if (items.length !== pageSize) {
-            console.info("There are fewer items than requested");
+            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
           }
-          console.log(items);
           var dates = [];
           var readings = [];
           items.reverse().forEach((element) => {
@@ -56,10 +56,10 @@ const WeightChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, [startDate, endDate, maxEntries]);
+  }, []);
 
-  console.log(labels);
-  console.log(data);
+  const weightPointColor = getCssVariable('--weightChartPointColor');
+  const weightLineColor = getCssVariable('--weightChartLineColor');
 
   return (
     <Line
@@ -67,8 +67,8 @@ const WeightChart = (props) => {
         labels,
         datasets: [
           {
-            backgroundColor: "white",
-            borderColor: "green",
+            backgroundColor: weightPointColor || 'white',
+            borderColor: weightLineColor || 'green',
             data,
           },
         ],
@@ -77,7 +77,11 @@ const WeightChart = (props) => {
         responsive: true,
         scales: {
           y: {
-            type: "linear",
+            type: 'linear',
+          },
+          x: {
+            type: 'category',
+            offset: true,
           },
         },
         plugins: {
@@ -87,7 +91,7 @@ const WeightChart = (props) => {
           title: {
             display: true,
             text: 'Weight',
-          }
+          },
         },
       }}
     />

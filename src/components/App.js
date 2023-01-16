@@ -1,19 +1,22 @@
-import HeartRateChart from "./heart-rate-chart/HeartRateChart";
-import BloodPressureChart from "./blood-pressure-chart/BloodPressureChart";
-import WeightChart from "./weight-chart/WeightChart";
-import StepsChart from "./steps-chart/StepsChart";
+import HeartRateChart from './heart-rate-chart/HeartRateChart';
+import BloodPressureChart from './blood-pressure-chart/BloodPressureChart';
+import WeightChart from './weight-chart/WeightChart';
+import StepsChart from './steps-chart/StepsChart';
 
-const App = ({ route }) => {
+const App = ({route, ...props}) => {
   if (route === 'weight') {
-    return <WeightChart startDate={new Date(2023, 0, 8)} />;
+    return <WeightChart {...props} />;
   }
   if (route === 'steps') {
-    return <StepsChart startDate={new Date(2023, 0, 8)} />;
+    return <StepsChart {...props} />;
   }
   if (route === 'blood-pressure') {
-    return <BloodPressureChart startDate={new Date(2023, 0, 8)} />;
+    return <BloodPressureChart {...props} />;
   }
-  return <HeartRateChart startDate={new Date(2023, 0, 8)} />;
+  if (route === 'heart-rate') {
+    return <HeartRateChart {...props} />;
+  }
+  return <HeartRateChart {...props} />;
 };
 
 export default App;

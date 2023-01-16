@@ -1,70 +1,220 @@
-# Getting Started with Create React App
+# React Healthcare Charts
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![Deploy to
+Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/peterrichards-lr/healthcare-react-components)
 
-## Available Scripts
+Example of several React components that leverage fetting Liferay Object data.
 
-In the project directory, you can run:
+![Example Charts](./images/example.png)
 
-### `npm start`
+### Expected Use
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This resource can be used as a 7.4 Remote App (Custom Element) or a Client Extension service for LXC.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Heart Rate Chart
 
-### `npm test`
+### Create the required Lifeary Objects
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Create Object named:
 
-### `npm run build`
+- Label: "Heart Rate"
+- Pural Label: "Heart Rate"
+- Object Name: "HeartRate"
+- Note: This object represents a list of heart rate readings recorded for the current Liferay user.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Object Needs the Fields
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Field Name  | Label        |  Type   | Required |
+| :---------- | :----------- | :-----: | :------: |
+| lowest      | Lowest       | Integer |   Yes    |
+| highest     | Highest      | Integer |   Yes    |
+| readingDate | Reading Date |  Date   |   Yes    |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Object Relationships
 
-### `npm run eject`
+| Field Name         | Label |    Type     | Required |
+| :----------------- | :---: | :---------: | -------- |
+| r_heartRate_userId | User  | One to Many | Yes      |
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Note: The object should be created from the User object
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4. Publish the new HeartRate Object
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Add sample data to the Lifeary Objects
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Add a few rate records for the component to use:
 
-## Learn More
+| User | Reading Date  | Lowest | Highest |
+| :--- | :------------ | -----: | ------: |
+| Test | 8th Jan 2023  |     87 |     137 |
+| Test | 9th Jan 2023  |     92 |     187 |
+| Test | 10th Jan 2023 |     79 |     134 |
+| Test | 11th Jan 2023 |     80 |     110 |
+| Test | 12th Jan 2023 |     94 |     125 |
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Blood Pressure Chart
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Create the required Lifeary Objects
 
-### Code Splitting
+1. Create Object named:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Label: "Blood Pressure"
+- Pural Label: "Blood Pressure"
+- Object Name: "BloodPressure"
+- Note: This object represents a list of blood pressure readings recorded for the current Liferay user.
 
-### Analyzing the Bundle Size
+2. Object Needs the Fields
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+| Field Name  | Label        |  Type   | Required |
+| :---------- | :----------- | :-----: | :------: |
+| diastolic   | Diastolic    | Integer |   Yes    |
+| systolic    | Systolic     | Integer |   Yes    |
+| readingDate | Reading Date |  Date   |   Yes    |
 
-### Making a Progressive Web App
+3. Object Relationships
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+| Field Name             | Label |    Type     | Required |
+| :--------------------- | :---: | :---------: | -------- |
+| r_bloodPressure_userId | User  | One to Many | Yes      |
 
-### Advanced Configuration
+Note: The object should be created from the User object
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+4. Publish the new BloodPressure Object
 
-### Deployment
+### Add sample data to the Lifeary Objects
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. Add a few rate records for the component to use:
 
-### `npm run build` fails to minify
+| User | Reading Date  | Diastolic | Systolic |
+| :--- | :------------ | --------: | -------: |
+| Test | 8th Jan 2023  |       102 |      155 |
+| Test | 9th Jan 2023  |       114 |      172 |
+| Test | 10th Jan 2023 |        97 |      153 |
+| Test | 11th Jan 2023 |       108 |      169 |
+| Test | 12th Jan 2023 |       102 |      154 |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Steps Chart
+
+### Create the required Lifeary Objects
+
+1. Create Object named:
+
+- Label: "Step"
+- Pural Label: "Steps"
+- Object Name: "Steps"
+- Note: This object represents a list of step counts recorded for the current Liferay user.
+
+2. Object Needs the Fields
+
+| Field Name  | Label        |  Type   | Required |
+| :---------- | :----------- | :-----: | :------: |
+| stepCount   | Step Count   | Integer |   Yes    |
+| readingDate | Reading Date |  Date   |   Yes    |
+
+3. Object Relationships
+
+| Field Name     | Label |    Type     | Required |
+| :------------- | :---: | :---------: | -------- |
+| r_steps_userId | User  | One to Many | Yes      |
+
+Note: The object should be created from the User object
+
+4. Publish the new Steps Object
+
+### Add sample data to the Lifeary Objects
+
+1. Add a few rate records for the component to use:
+
+| User | Reading Date  | Step Count |
+| :--- | :------------ | ---------: |
+| Test | 8th Jan 2023  |       9384 |
+| Test | 9th Jan 2023  |       3509 |
+| Test | 10th Jan 2023 |       7584 |
+| Test | 11th Jan 2023 |      10234 |
+| Test | 12th Jan 2023 |      11352 |
+
+## Weight Chart
+
+### Create the required Lifeary Objects
+
+1. Create Object named:
+
+- Label: "Weight"
+- Pural Label: "Weight"
+- Object Name: "Weight"
+- Note: This object represents a list of recorded weights for the current Liferay user.
+
+2. Object Needs the Fields
+
+| Field Name  | Label        |  Type   | Required |
+| :---------- | :----------- | :-----: | :------: |
+| weight      | Weight       | Decimal |   Yes    |
+| readingDate | Reading Date |  Date   |   Yes    |
+
+3. Object Relationships
+
+| Field Name      | Label |    Type     | Required |
+| :-------------- | :---: | :---------: | -------- |
+| r_weight_userId | User  | One to Many | Yes      |
+
+Note: The object should be created from the User object
+
+4. Publish the new Weight Object
+
+### Add sample data to the Lifeary Objects
+
+1. Add a few rate records for the component to use:
+
+| User | Reading Date  | Step Count |
+| :--- | :------------ | ---------: |
+| Test | 8th Jan 2023  |       93.1 |
+| Test | 9th Jan 2023  |       92.5 |
+| Test | 10th Jan 2023 |       92.9 |
+| Test | 11th Jan 2023 |       92.1 |
+| Test | 12th Jan 2023 |       91.9 |
+
+## Clone Repo and Install Packages
+
+Clone repo and once ready run the following:
+
+yarn install
+
+# Display Method Options
+
+- Delivery Method A - Remote App's Custom Element
+
+  - [Option 1] Javascript Resources Hosted on Remote Server or LXC Client Extension Service
+  - [Option 2] Javascript Resources Hosted on Liferay Server in webapps
+  - [Option 3] Javascript Resources Added to Document Library
+
+## Setup Instruction
+
+Include these in your Remote App or LXC Client Extension Service definition.
+
+| Field             | Value                       |
+| :---------------- | :-------------------------- |
+| HTML Element Name | healthcare-react-components |
+| URL               | path to main.js             |
+| CSS URL           | path to main.css            |
+
+- Delivery Method B - Use as separate React App (Make sure to set the CORs Policy to support this approach if on a separate domain)
+- Delivery Method C - Remote App's iFrame (Make sure to set the CORs Policy to support this approach if on a separate domain
+
+## Chart Types
+
+By default the Heart Rate Chart will be displayed. To use the others, it is necessary to set the route as part of the Remote App instance Properties.
+
+| Chart          | Route          |
+| :------------- | :------------- |
+| Heart Rate     | heart-rate     |
+| Blood Pressure | blood-pressure |
+| Steps          | steps          |
+| Weight         | weight         |
+
+### Properties
+
+route = 'heart-rate' | 'blood-pressure' | 'steps' | 'weight', default if not provided =  'heart-rate'
+startDate = date in ISO format, i.e. 'YYYY-MM-DD', default if not provided is today's date
+endDate = date in ISO format, i.e. 'YYYY-MM-DD', default if not provided is startDate plus 7 days
+maxEntires = integer, default if not provided is 7
+targetSteps = integer, default if not provided is 10000

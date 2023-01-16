@@ -11,18 +11,19 @@ import {
 import { Bar } from 'react-chartjs-2';
 
 import heartRateApi from './HeartRateApi';
+import { getCssVariable, propsStrToObj } from '../../common/utility';
 
 ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const HeartRateChart = (props) => {
-  const { startDate, endDate, maxEntries = 7 } = props;
+  const { startDate, endDate, maxEntries } = propsStrToObj(props);
   const [labels, setLabels] = useState();
   const [data, setData] = useState();
 
@@ -36,12 +37,11 @@ const HeartRateChart = (props) => {
             return;
           }
           if (pageSize < totalCount) {
-            console.warn('The returned set of items is not the full set');
+            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
           }
           if (items.length !== pageSize) {
-            console.info('There are fewer items than requested');
+            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
           }
-          console.log(items);
           var dates = [];
           var readings = [];
           items.reverse().forEach((element) => {
@@ -54,40 +54,39 @@ const HeartRateChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, [startDate, endDate, maxEntries]);
+  }, []);
 
-  console.log(labels);
-  console.log(data);
-
+  const heartRateBarColor = getCssVariable('--heartRateChartBarColor');
+  
   return (
-    <Bar 
+    <Bar
       data={{
         labels,
         datasets: [
-            {
-                backgroundColor: 'orange',
-                data
-            }
-        ]
+          {
+            backgroundColor: heartRateBarColor || 'orange',
+            data,
+          },
+        ],
       }}
       options={{
         responsive: true,
         scales: {
-            y: {
-                type: 'linear',
-                min: 25,
-                max: 220
-            }
+          y: {
+            type: 'linear',
+            min: 25,
+            max: 220,
+          },
         },
         plugins: {
           legend: {
-            display: false
+            display: false,
           },
           title: {
             display: true,
             text: 'Heart Rate',
-          }
-        }
+          },
+        },
       }}
     />
   );

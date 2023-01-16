@@ -6,9 +6,12 @@ import './styles/index.css';
 
 class HealthcareReactComponents extends HTMLElement {
   connectedCallback() {
-    createRoot(this).render(
-      <App route={this.getAttribute("route")}/>
-    );
+    createRoot(this).render(<App
+      route={this.getAttribute('route')}
+      startDate={this.getAttribute('startDate')}
+      endDate={this.getAttribute('endDate')}
+      maxEntries={this.getAttribute('maxEntries')}
+      targetSteps={this.getAttribute('targetSteps')} />);
   }
 }
 const ELEMENT_ID = 'healthcare-react-components';
