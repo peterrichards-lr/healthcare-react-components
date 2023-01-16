@@ -5,10 +5,11 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  Title,
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 import bloodPressureApi from './BloodPressureApi';
 
@@ -17,18 +18,20 @@ ChartJS.register(
     LinearScale,
     PointElement,
     LineElement,
+    Title,
     Tooltip,
     Legend
   );
 
 const BloodPressureChart = (props) => {
+  const { startDate, endDate, maxEntries = 7 } = props;
   const [labels, setLabels] = useState();
   const [diastolicData, setDiastolicData] = useState();
   const [systolicData, setSystolicData] = useState();
 
   useEffect(() => {
     (async () => {
-      await bloodPressureApi(props.startDate, props.endDate, props.maxEntries)
+      await bloodPressureApi(startDate, endDate, maxEntries)
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
           if (items === undefined || !(items instanceof Array)) {
@@ -57,7 +60,7 @@ const BloodPressureChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, [props.startDate, props.endDate, props.maxEntries]);
+  }, [startDate, endDate, maxEntries]);
 
   console.log(labels);
   console.log(diastolicData);
@@ -90,6 +93,12 @@ const BloodPressureChart = (props) => {
                 min: 50,
                 max: 200
             }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: 'Blood Pressure',
+          }
         }
       }}
     />
