@@ -213,8 +213,8 @@ By default the Heart Rate Chart will be displayed. To use the others, it is nece
 
 ### Properties
 
-route = 'heart-rate' | 'blood-pressure' | 'steps' | 'weight', default if not provided =  'heart-rate'
-startDate = date in ISO format, i.e. 'YYYY-MM-DD', default if not provided is today's date
-endDate = date in ISO format, i.e. 'YYYY-MM-DD', default if not provided is startDate plus 7 days
-maxEntires = integer, default if not provided is 7
-targetSteps = integer, default if not provided is 10000
+- _route_ : 'heart-rate' | 'blood-pressure' | 'steps' | 'weight', default if not provided =  'heart-rate'
+- _startDate_ : date in ISO format, i.e. 'YYYY-MM-DD', default if not provided is today's date
+- _endDate_ : date in ISO format, i.e. 'YYYY-MM-DD', default if not provided is startDate plus 7 days
+- _maxEntires_ : integer, default if not provided is 7
+- _targetSteps_ : integer, default if not provided is 10000
