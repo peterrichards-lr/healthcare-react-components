@@ -1,8 +1,5 @@
 # React Healthcare Charts
 
-[![Deploy to
-Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/peterrichards-lr/healthcare-react-components)
-
 Example of several React components that leverage fetting Liferay Object data.
 
 ![Example Charts](./images/example.png)
