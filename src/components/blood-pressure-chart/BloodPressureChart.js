@@ -25,12 +25,12 @@ ChartJS.register(
 );
 
 const BloodPressureChart = (props) => {
-  const { startDate, endDate, maxEntries } = propsStrToObj(props);
   const [labels, setLabels] = useState();
   const [systolicData, setSystolicData] = useState();
   const [diastolicData, setDiastolicData] = useState();
 
   useEffect(() => {
+    const { startDate, endDate, maxEntries } = propsStrToObj(props);
     (async () => {
       await bloodPressureApi(startDate, endDate, maxEntries)
         .then((respone) => {
@@ -60,7 +60,7 @@ const BloodPressureChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, []);
+  }, [props]);
 
   const sysPointColor = getCssVariable('--bloodPressureChartSysPointColor');
   const sysLineColor = getCssVariable('--bloodPressureChartSysLineColor');

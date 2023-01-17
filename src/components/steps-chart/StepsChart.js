@@ -13,7 +13,7 @@ import { Bar } from 'react-chartjs-2';
 import AnnotationPlugin from 'chartjs-plugin-annotation';
 
 import stepsApi from './StepsApi';
-import { getCssVariable, propsStrToObj } from '../../common/utility';
+import { getCssVariable, propsStrToObj, isNumeric } from '../../common/utility';
 
 ChartJS.register(
   AnnotationPlugin,
@@ -26,14 +26,16 @@ ChartJS.register(
 );
 
 const StepsChart = (props) => {
-  var { startDate, endDate, maxEntries, targetSteps } = propsStrToObj(props);
   const [labels, setLabels] = useState([]);
   const [data, setData] = useState([]);
 
-  targetSteps =
-    targetSteps ? targetSteps : 10000;
+  console.debug(`Param props.targetSteps=${props.targetSteps}`);
+  const targetStepsInt = isNumeric(props.targetSteps) ? Number(props.targetSteps) : undefined;
+  const targetSteps = Number.isInteger(targetStepsInt) ? parseInt(targetStepsInt) : 10000;
+  console.debug(`Using targetSteps=${targetSteps}`);
 
   useEffect(() => {
+    const { startDate, endDate, maxEntries } = propsStrToObj(props);
     (async () => {
       await stepsApi(startDate, endDate, maxEntries)
         .then((respone) => {
@@ -60,7 +62,7 @@ const StepsChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, []);
+  }, [props]);
 
   const targetLineColor = getCssVariable('--stepsChartTargetLineColor');
   const belowTargetColor = getCssVariable('--stepsChartBelowTargetBarColor');

@@ -67,20 +67,13 @@ const isNumeric = (str) => {
          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
 
-const isInt = (n) => {
-  return Number(n) === n && n % 1 === 0;
-}
-
-const isFloat = (n) => {
-  return Number(n) === n && n % 1 !== 0;
-}
-
 const propsStrToObj = (strProps) => {
   var objProps = {};
   for (const prop in strProps) {
     const value = strProps[prop];
     if (isNumeric(value)) {
-      objProps[prop] = isInt(value) ? parseInt(value) : parseFloat(value);
+      const num = Number(value);
+      objProps[prop] = Number.isInteger(num) ? parseInt(num) : parseFloat(num);
     } else if (moment(value, 'YYYY-MM-DD').isValid()) {
       objProps[prop] = new Date(value);
     } else {
@@ -97,7 +90,5 @@ export {
   buildObjectAPISearchParams,
   getCssVariable,
   isNumeric,
-  isInt,
-  isFloat,
   propsStrToObj
 };

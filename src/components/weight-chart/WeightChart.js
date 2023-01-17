@@ -25,11 +25,11 @@ ChartJS.register(
 );
 
 const WeightChart = (props) => {
-  const { startDate, endDate, maxEntries} = propsStrToObj(props);
   const [labels, setLabels] = useState();
   const [data, setData] = useState();
 
   useEffect(() => {
+    const { startDate, endDate, maxEntries} = propsStrToObj(props);
     (async () => {
       await weightApi(startDate, endDate, maxEntries)
         .then((respone) => {
@@ -56,7 +56,7 @@ const WeightChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, []);
+  }, [props]);
 
   const weightPointColor = getCssVariable('--weightChartPointColor');
   const weightLineColor = getCssVariable('--weightChartLineColor');

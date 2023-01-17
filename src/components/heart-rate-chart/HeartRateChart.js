@@ -23,11 +23,11 @@ ChartJS.register(
 );
 
 const HeartRateChart = (props) => {
-  const { startDate, endDate, maxEntries } = propsStrToObj(props);
   const [labels, setLabels] = useState();
   const [data, setData] = useState();
 
   useEffect(() => {
+    const { startDate, endDate, maxEntries } = propsStrToObj(props);
     (async () => {
       await heartRateApi(startDate, endDate, maxEntries)
         .then((respone) => {
@@ -54,7 +54,7 @@ const HeartRateChart = (props) => {
         })
         .catch((reason) => console.error(reason));
     })();
-  }, []);
+  }, [props]);
 
   const heartRateBarColor = getCssVariable('--heartRateChartBarColor');
   
