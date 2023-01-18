@@ -10,8 +10,18 @@ class HealthcareComponent extends HTMLElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    console.log(`The attribute ${name} was updated.`);
-    this.render();
+    console.debug(`The attribute ${name} was updated.`);
+    switch (name) {
+      case 'route':
+        return;
+      case 'startdate':
+      case 'enddate':
+      case 'maxentries':
+      case 'targetsteps':
+        if (!newValue || newValue == oldValue) return;
+        this.render();
+        break;
+    }
   }
 
   render() {
