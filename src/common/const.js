@@ -4,6 +4,7 @@ const PAGE_SIZE_PARAM = 'pageSize';
 const SORT_PARAM = 'sort';
 const SORT_ASCENDING = 'asc';
 const SORT_DESCENDING = 'desc';
+const TOP_LEVEL_TOPIC = 'healthcare-example';
 
 export {
   FILTER_PARAM,
@@ -12,4 +13,5 @@ export {
   SORT_PARAM,
   SORT_ASCENDING,
   SORT_DESCENDING,
+  TOP_LEVEL_TOPIC
 };

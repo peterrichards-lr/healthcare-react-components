@@ -11,9 +11,11 @@ import {
 
 import { Bar } from 'react-chartjs-2';
 import AnnotationPlugin from 'chartjs-plugin-annotation';
+import PubSub from 'pubsub-js';
 
 import stepsApi from './StepsApi';
 import { getCssVariable, propsStrToObj, isNumeric } from '../../common/utility';
+import { TOP_LEVEL_TOPIC } from '../../common/const';
 
 ChartJS.register(
   AnnotationPlugin,
@@ -25,18 +27,43 @@ ChartJS.register(
   Legend
 );
 
+const TOPIC_NAME = `${TOP_LEVEL_TOPIC}:steps-chart`;
+
 const StepsChart = (props) => {
   const [labels, setLabels] = useState([]);
   const [data, setData] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   console.debug(`Param props.targetSteps=${props.targetSteps}`);
-  const targetStepsInt = isNumeric(props.targetSteps) ? Number(props.targetSteps) : undefined;
-  const targetSteps = Number.isInteger(targetStepsInt) ? parseInt(targetStepsInt) : 10000;
+  const targetStepsInt = isNumeric(props.targetSteps)
+    ? Number(props.targetSteps)
+    : undefined;
+  const targetSteps = Number.isInteger(targetStepsInt)
+    ? parseInt(targetStepsInt)
+    : 10000;
   console.debug(`Using targetSteps=${targetSteps}`);
 
+  const topicListener = (msg, data) => {
+    console.log(msg, data);
+    if (data && 'refresh' in data && data.refresh) {
+      setRefresh(true);
+    } else {
+      console.info(`Unknown message - ${msg}`, data);
+    }
+  };
+
   useEffect(() => {
-    const { startDate, endDate, maxEntries } = propsStrToObj(props);
+    PubSub.subscribe(TOP_LEVEL_TOPIC, topicListener);
+    PubSub.subscribe(TOPIC_NAME, topicListener);
+
+    return () => {
+      PubSub.unsubscribe(topicListener);
+    };
+  }, []);
+
+  useEffect(() => {
     (async () => {
+      const { startDate, endDate, maxEntries } = propsStrToObj(props);
       await stepsApi(startDate, endDate, maxEntries)
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
@@ -45,10 +72,14 @@ const StepsChart = (props) => {
             return;
           }
           if (pageSize < totalCount) {
-            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
+            console.warn(
+              `The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`
+            );
           }
           if (items.length !== pageSize) {
-            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
+            console.debug(
+              `There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`
+            );
           }
           var dates = [];
           var readings = [];
@@ -61,8 +92,9 @@ const StepsChart = (props) => {
           setData(readings);
         })
         .catch((reason) => console.error(reason));
+        setRefresh(false);
     })();
-  }, [props]);
+  }, [props, refresh]);
 
   const targetLineColor = getCssVariable('--stepsChartTargetLineColor');
   const belowTargetColor = getCssVariable('--stepsChartBelowTargetBarColor');
@@ -75,15 +107,11 @@ const StepsChart = (props) => {
         datasets: [
           {
             backgroundColor: belowTargetColor || 'lightgray',
-            data: data.map(function (value) {
-              return value < targetSteps ? value : null;
-            }),
+            data: data.map((value) => value < targetSteps ? value : null),
           },
           {
             backgroundColor: aboveTargetColor || 'green',
-            data: data.map(function (value) {
-              return value >= targetSteps ? value : null;
-            }),
+            data: data.map((value) => value >= targetSteps ? value : null),
           },
         ],
       }}
@@ -97,6 +125,13 @@ const StepsChart = (props) => {
             type: 'category',
             stacked: true,
           },
+        },
+        transitions: {
+          show: {
+            animation: {
+              duration:0
+            }
+          }
         },
         plugins: {
           legend: {

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   FILTER_PARAM,
   PAGE_PARAM,
@@ -8,7 +9,6 @@ import {
 } from './const';
 
 import moment from 'moment';
-
 
 const pad = (num, size) => {
   num = num.toString();
@@ -57,15 +57,19 @@ const getCssVariable = (variableName) => {
   if (variableName === undefined || typeof variableName !== 'string') {
     return undefined;
   }
-  variableName = variableName.startsWith('--') ? variableName : `--${variableName}`;
+  variableName = variableName.startsWith('--')
+    ? variableName
+    : `--${variableName}`;
   return window.getComputedStyle(document.body).getPropertyValue(variableName);
-}
+};
 
 const isNumeric = (str) => {
-  if (typeof str != "string") return false // we only process strings!  
-  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
-}
+  if (typeof str != 'string') return false; // we only process strings!
+  return (
+    !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(str))
+  ); // ...and ensure strings of whitespace fail
+};
 
 const propsStrToObj = (strProps) => {
   var objProps = {};
@@ -80,8 +84,8 @@ const propsStrToObj = (strProps) => {
       objProps[prop] = value;
     }
   }
-  return objProps
-}
+  return objProps;
+};
 
 export {
   customDateFieldFormat,

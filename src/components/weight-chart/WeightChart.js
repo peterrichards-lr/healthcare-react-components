@@ -10,9 +10,11 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import PubSub from 'pubsub-js';
 
 import weightApi from './WeightApi';
 import { getCssVariable, propsStrToObj } from '../../common/utility';
+import { TOP_LEVEL_TOPIC } from '../../common/const';
 
 ChartJS.register(
   CategoryScale,
@@ -24,13 +26,34 @@ ChartJS.register(
   Legend
 );
 
+const TOPIC_NAME = `${TOP_LEVEL_TOPIC}:weight-chart`;
+
 const WeightChart = (props) => {
   const [labels, setLabels] = useState();
   const [data, setData] = useState();
+  const [refresh, setRefresh] = useState(true);
+
+  const topicListener = (msg, data) => {
+    console.log(msg, data);
+    if (data && 'refresh' in data && data.refresh) {
+      setRefresh(true);
+    } else {
+      console.info(`Unknown message - ${msg}`, data);
+    }
+  };
 
   useEffect(() => {
-    const { startDate, endDate, maxEntries} = propsStrToObj(props);
+    PubSub.subscribe(TOP_LEVEL_TOPIC, topicListener);
+    PubSub.subscribe(TOPIC_NAME, topicListener);
+
+    return () => {
+      PubSub.unsubscribe(topicListener);
+    };
+  }, []);
+
+  useEffect(() => {
     (async () => {
+      const { startDate, endDate, maxEntries } = propsStrToObj(props);
       await weightApi(startDate, endDate, maxEntries)
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
@@ -39,10 +62,14 @@ const WeightChart = (props) => {
             return;
           }
           if (pageSize < totalCount) {
-            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
+            console.warn(
+              `The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`
+            );
           }
           if (items.length !== pageSize) {
-            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
+            console.debug(
+              `There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`
+            );
           }
           var dates = [];
           var readings = [];
@@ -53,10 +80,11 @@ const WeightChart = (props) => {
           });
           setLabels(dates);
           setData(readings);
+          setRefresh(false);
         })
         .catch((reason) => console.error(reason));
     })();
-  }, [props]);
+  }, [props,refresh]);
 
   const weightPointColor = getCssVariable('--weightChartPointColor');
   const weightLineColor = getCssVariable('--weightChartLineColor');

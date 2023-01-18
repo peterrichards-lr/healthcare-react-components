@@ -10,9 +10,11 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import PubSub from 'pubsub-js';
 
 import bloodPressureApi from './BloodPressureApi';
 import { getCssVariable, propsStrToObj } from '../../common/utility';
+import { TOP_LEVEL_TOPIC } from '../../common/const';
 
 ChartJS.register(
   CategoryScale,
@@ -24,14 +26,35 @@ ChartJS.register(
   Legend
 );
 
+const TOPIC_NAME = `${TOP_LEVEL_TOPIC}:blood-pressure-chart`;
+
 const BloodPressureChart = (props) => {
   const [labels, setLabels] = useState();
   const [systolicData, setSystolicData] = useState();
   const [diastolicData, setDiastolicData] = useState();
+  const [refresh, setRefresh] = useState(false);
+
+  const topicListener = (msg, data) => {
+    console.log(msg, data);
+    if (data && 'refresh' in data && data.refresh) {
+      setRefresh(true);
+    } else {
+      console.info(`Unknown message - ${msg}`, data);
+    }
+  };
 
   useEffect(() => {
-    const { startDate, endDate, maxEntries } = propsStrToObj(props);
+    PubSub.subscribe(TOP_LEVEL_TOPIC, topicListener);
+    PubSub.subscribe(TOPIC_NAME, topicListener);
+
+    return () => {
+      PubSub.unsubscribe(topicListener);
+    };
+  }, []);
+
+  useEffect(() => {
     (async () => {
+      const { startDate, endDate, maxEntries } = propsStrToObj(props);
       await bloodPressureApi(startDate, endDate, maxEntries)
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
@@ -40,10 +63,14 @@ const BloodPressureChart = (props) => {
             return;
           }
           if (pageSize < totalCount) {
-            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
+            console.warn(
+              `The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`
+            );
           }
           if (items.length !== pageSize) {
-            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
+            console.debug(
+              `There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`
+            );
           }
           var dates = [];
           var systolicReadings = [];
@@ -59,8 +86,9 @@ const BloodPressureChart = (props) => {
           setDiastolicData(diastolicReadings);
         })
         .catch((reason) => console.error(reason));
+        setRefresh(false);
     })();
-  }, [props]);
+  }, [props, refresh]);
 
   const sysPointColor = getCssVariable('--bloodPressureChartSysPointColor');
   const sysLineColor = getCssVariable('--bloodPressureChartSysLineColor');

@@ -9,9 +9,11 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import PubSub from 'pubsub-js';
 
 import heartRateApi from './HeartRateApi';
 import { getCssVariable, propsStrToObj } from '../../common/utility';
+import { TOP_LEVEL_TOPIC } from '../../common/const';
 
 ChartJS.register(
   CategoryScale,
@@ -22,13 +24,34 @@ ChartJS.register(
   Legend
 );
 
+const TOPIC_NAME = `${TOP_LEVEL_TOPIC}:heart-rate-chart`;
+
 const HeartRateChart = (props) => {
   const [labels, setLabels] = useState();
   const [data, setData] = useState();
+  const [refresh, setRefresh] = useState(false);
+
+  const topicListener = (msg, data) => {
+    console.log(msg, data);
+    if (data && 'refresh' in data && data.refresh) {
+      setRefresh(true);
+    } else {
+      console.info(`Unknown message - ${msg}`, data);
+    }
+  };
 
   useEffect(() => {
-    const { startDate, endDate, maxEntries } = propsStrToObj(props);
+    PubSub.subscribe(TOP_LEVEL_TOPIC, topicListener);
+    PubSub.subscribe(TOPIC_NAME, topicListener);
+
+    return () => {
+      PubSub.unsubscribe(topicListener);
+    };
+  }, []);
+
+  useEffect(() => {
     (async () => {
+      const { startDate, endDate, maxEntries } = propsStrToObj(props);
       await heartRateApi(startDate, endDate, maxEntries)
         .then((respone) => {
           const { items, pageSize, totalCount } = respone;
@@ -37,10 +60,14 @@ const HeartRateChart = (props) => {
             return;
           }
           if (pageSize < totalCount) {
-            console.warn(`The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`);
+            console.warn(
+              `The returned set of items is not the full set: returned ${pageSize}, set size ${totalCount}`
+            );
           }
           if (items.length !== pageSize) {
-            console.debug(`There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`);
+            console.debug(
+              `There are fewer items than requested: requested: returned ${items.length}, requested ${pageSize}`
+            );
           }
           var dates = [];
           var readings = [];
@@ -53,11 +80,12 @@ const HeartRateChart = (props) => {
           setData(readings);
         })
         .catch((reason) => console.error(reason));
+        setRefresh(false);
     })();
-  }, [props]);
+  }, [props, refresh]);
 
   const heartRateBarColor = getCssVariable('--heartRateChartBarColor');
-  
+
   return (
     <Bar
       data={{
