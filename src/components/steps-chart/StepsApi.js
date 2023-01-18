@@ -23,7 +23,7 @@ const stepsApi = (startDate, endDate, maxEntries) => {
     endDate && endDate instanceof Date
       ? endDate
       : new Date(new Date().setDate(new Date().getDate() + 7));
-  maxEntries = maxEntries && maxEntries instanceof Number ? maxEntries : 7;
+  maxEntries = maxEntries && typeof maxEntries === 'number' ? maxEntries : 7;
 
   console.debug(`Using startDate=${startDate}`);
   console.debug(`Using endDate=${endDate}`);

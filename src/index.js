@@ -12,15 +12,15 @@ class HealthcareComponent extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     console.debug(`The attribute ${name} was updated.`);
     switch (name) {
-      case 'route':
-        return;
       case 'startdate':
       case 'enddate':
       case 'maxentries':
       case 'targetsteps':
-        if (!newValue || newValue == oldValue) return;
+        if (!newValue || newValue === oldValue) return;
         this.render();
-        break;
+        return;
+      default:
+        return;
     }
   }
 
