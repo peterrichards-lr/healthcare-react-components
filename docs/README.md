@@ -188,11 +188,11 @@ yarn install
 
 Include these in your Remote App or LXC Client Extension Service definition.
 
-| Field             | Value                       |
-| :---------------- | :-------------------------- |
-| HTML Element Name | healthcare-react-components |
-| URL               | path to main.js             |
-| CSS URL           | path to main.css            |
+| Field             | Value                |
+| :---------------- | :------------------- |
+| HTML Element Name | healthcare-component |
+| URL               | path to main.js      |
+| CSS URL           | path to main.css     |
 
 - Delivery Method B - Use as separate React App (Make sure to set the CORs Policy to support this approach if on a separate domain)
 - Delivery Method C - Remote App's iFrame (Make sure to set the CORs Policy to support this approach if on a separate domain
