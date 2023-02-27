@@ -80,6 +80,10 @@ const propsStrToObj = (strProps) => {
       objProps[prop] = Number.isInteger(num) ? parseInt(num) : parseFloat(num);
     } else if (moment(value, 'YYYY-MM-DD').isValid()) {
       objProps[prop] = new Date(value);
+    } else if (typeof value === 'string' && value.toLowerCase() === 'true') {
+      objProps[prop] = true;
+    } else if (typeof value === 'string' && value.toLowerCase() === 'false') {
+      objProps[prop] = false;
     } else {
       objProps[prop] = value;
     }

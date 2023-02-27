@@ -53,8 +53,8 @@ const HeartRateChart = (props) => {
     (async () => {
       const { startDate, endDate, maxEntries } = propsStrToObj(props);
       await heartRateApi(startDate, endDate, maxEntries)
-        .then((respone) => {
-          const { items, pageSize, totalCount } = respone;
+        .then((response) => {
+          const { items, pageSize, totalCount } = response;
           if (items === undefined || !(items instanceof Array)) {
             console.warn('Items is not an array');
             return;

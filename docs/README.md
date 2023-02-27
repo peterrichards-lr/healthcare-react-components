@@ -1,5 +1,10 @@
 # React Healthcare Charts
 
+## Getting Started
+The original getting started guide can be found [here](./getting-started.md)
+
+## Overview
+
 Example of several React components that leverage fetting Liferay Object data.
 
 ![Example Charts](./images/example.png)
