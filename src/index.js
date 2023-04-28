@@ -1,4 +1,4 @@
-import React from 'react';
+import StrictMode from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './components/App';
 
@@ -26,13 +26,15 @@ class HealthcareComponent extends HTMLElement {
 
   render() {
     createRoot(this).render(
-      <App
-        route={this.getAttribute('route')}
-        startDate={this.getAttribute('startdate')}
-        endDate={this.getAttribute('enddate')}
-        maxEntries={this.getAttribute('maxentries')}
-        targetSteps={this.getAttribute('targetsteps')}
-      />
+      <StrictMode>
+        <App
+          route={this.getAttribute('route')}
+          startDate={this.getAttribute('startdate')}
+          endDate={this.getAttribute('enddate')}
+          maxEntries={this.getAttribute('maxentries')}
+          targetSteps={this.getAttribute('targetsteps')}
+        />
+      </StrictMode>
     );
   }
 
