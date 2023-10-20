@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   FILTER_PARAM,
   PAGE_PARAM,
